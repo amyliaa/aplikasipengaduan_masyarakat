@@ -32,7 +32,7 @@ Route::post('login',[LoginController::class,'authenticate']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::resource('/user',UserController::class)->except('destroy','create','show','update','edit');
+Route::resource('/user',UserController::class)->except('destroy');
 Route::resource('/pengaduan',PengaduanController::class)->except('destroy','show');
 Route::get('/masyarakat', [MasyarakatController::class, 'index'])->name('user.masyarakat');
 Route::get('/laporan', [UserController::class, 'laporan'])->name('user.laporan');
