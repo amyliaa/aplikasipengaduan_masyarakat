@@ -101,6 +101,32 @@
         .btn:hover {
             background-color: #0056b3;
         }
+
+        /* Alert styling */
+        .alert {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .alert h5 {
+            font-size: 16px;
+            margin: 0 0 5px;
+        }
+
+        .alert .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -109,25 +135,43 @@
         <div class="logo-container">
             <img src="assets/img/favicon.svg" alt="Logo" class="logo">
         </div>
+
+        <!-- Pesan error -->
+        @if(session()->has('loginError'))
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close">&times;</button>
+            <h5><i class="icon fas fa-ban"></i> Alert!</h5>
+            {{ session('loginError') }}
+        </div>
+        @endif
+
         <form class="login-form" action="/login" method="POST">
+            @csrf
             <div class="input-group">
-                <label>Username</label>
-                <input type="username" name="username" required>
+                <label for="username">Username</label>
+                <input type="text" class="form-control @error('username') is-invalid @enderror" placeholder="username" id="username" name="username" value="{{ old('username') }}" required>
             </div>
+
             <div class="input-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
-            </div>
-            <div class="options">
-                <div>
-                    <input type="checkbox" id="remember-me">
-                    <label for="remember-me">Remember me</label>
-                </div>
-                <a href="#" class="forgot-password">Forgot your password?</a>
-            </div>
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="password" id="password" required>
+            </div><br>
+
             <button type="submit" class="btn">Login</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeButton = document.querySelector('.alert .close');
+
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

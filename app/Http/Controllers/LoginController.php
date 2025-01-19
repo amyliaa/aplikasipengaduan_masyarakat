@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,31 +8,35 @@ class LoginController extends Controller
 {
     public function loginView()
     {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+
         return view('login');
     }
 
-    public function authenticate(Request $request):RedirectResponse
+    public function authenticate(Request $request): RedirectResponse
     {
-        $credentials=$request->validate([
-            'username'=>['required'],
-            'password'=>['required'],
+        $credentials = $request->validate([
+            'username' => ['required'],
+            'password' => ['required'],
         ]);
 
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended('/dashboard');
         }
-    
 
-        return back()->with('loginError','Login Failed');
-    
+        return back()->with('loginError', 'Login Failed');
     }
 
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/login');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }

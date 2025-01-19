@@ -1,7 +1,5 @@
 @extends('layouts.template')
-
 @section('title', 'Petugas')
-
 @section('content')
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Petugas</h1>
@@ -23,14 +21,28 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($data as $dt)
                         <tr>
-                            <td>Graiden</td>
-                            <td>vehicula.aliquet@semconsequat.co.uk</td>
+                            <td>{{ $dt->name }}</td>
+                            <td>{{ $dt->username }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <form action="{{ route('user.destroy',$dt->id)}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class=" fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -48,7 +60,25 @@
 <!-- DataTables Initialization -->
 <script>
     $(document).ready(function() {
-        $('#table1').DataTable(); // Initialize DataTables
+        $('#table1').DataTable(); 
     });
 </script>
 @endsection
+@if (session('success'))
+    <div class="custom-toast">
+        <i class="fas fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
+        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+@if (session('delete'))
+    <div class="custom-toast delete-toast" style="background-color: #f44336 !important; color: #fff !important;">
+        <i class="fas fa-trash-alt"></i>
+        <span>{{ session('delete') }}</span>
+        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif
+
+
+
+

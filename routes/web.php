@@ -11,31 +11,39 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route untuk masyarakat mengajukan pengaduan
+// Route untuk masyarakat mengajukan pengaduan (akses publik)
 Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
 Route::post('/pengaduan/store', [PengaduanController::class, 'store'])->name('pengaduan.store');
 
-// Route untuk masyarakat mengecek status pengaduan
+// Route untuk masyarakat mengecek status pengaduan (akses publik)
 Route::get('/cek-pengaduan', [PengaduanController::class, 'showSearchForm'])->name('pengaduan.cek-pengaduan');
 Route::post('/cek-pengaduan', [PengaduanController::class, 'searchPengaduan'])->name('pengaduan.search');
 Route::get('/detailpengaduan', [PengaduanController::class, 'detail'])->name('pengaduan.detail');
-Route::get('/tanggapan', [UserController::class, 'tanggapiPengaduan'])->name('user.tanggapanuser');
+// qr kode
+Route::get('/pengaduan/qr/{id}', [PengaduanController::class, 'generateQrCode'])->name('pengaduan.success');
+Route::get('/pengaduan/{id}', [PengaduanController::class, 'showForMasyarakat'])->name('pages.pengaduan.detail');
 
-// Route untuk menampilkan dan mengedit data masyarakat (hanya user)
-Route::get('/user/masyarakat/{id}', [MasyarakatController::class, 'show'])->name('masyarakat.show');
-Route::get('/user/masyarakat/{id}/edit', [MasyarakatController::class, 'edit'])->name('masyarakat.edit');
-Route::post('/user/masyarakat/{id}/update', [MasyarakatController::class, 'update'])->name('masyarakat.update');
 
-// Route untuk user
-Route::get('login',[LoginController::class,'loginView'])->name('login');
-Route::post('login',[LoginController::class,'authenticate']);
+// Route yang membutuhkan login (akses terbatas)
+Route::get('login', [LoginController::class, 'loginView'])->name('login');
+Route::post('login', [LoginController::class, 'authenticate']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::resource('/user',UserController::class)->except('destroy');
-Route::resource('/pengaduan',PengaduanController::class)->except('destroy','show');
-Route::get('/masyarakat', [MasyarakatController::class, 'index'])->name('user.masyarakat');
-Route::get('/laporan', [UserController::class, 'laporan'])->name('user.laporan');
-Route::get('/tambah-user', [UserController::class, 'create'])->name('pages.user.tambahuser');
-Route::get('/detail-pengaduan', [PengaduanController::class, 'show'])->name('pengaduan.detail');
-Route::get('/detail-pengaduan', [PengaduanController::class, 'show'])->name('pengaduan.show');
+// Menampilkan formulir tanggapan untuk Pengaduan 
+Route::get('/pengaduan/{id}/tanggapi', [UserController::class, 'tanggapiPengaduan'])->name('pengaduan.tanggapi')->middleware('auth');
+Route::post('/pengaduan/{id}/tanggapan', [UserController::class, 'kirimTanggapan'])->name('pengaduan.kirimTanggapan')->middleware('auth');
+
+// Route untuk user
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::resource('/pengaduan', PengaduanController::class)->only(['index', 'edit', 'update', 'destroy'])->middleware('auth');
+Route::resource('/user', UserController::class)->middleware('auth');
+Route::resource('/masyarakat', MasyarakatController::class)->only(['index', 'destroy'])->names(['index' => 'user.masyarakat', 'destroy' => 'masyarakat.destroy' ])->middleware('auth');
+Route::get('/laporan', [UserController::class, 'laporan'])->name('user.laporan')->middleware('auth');
+Route::get('/cetaklaporan', [UserController::class, 'cetak'])->name('user.cetaklaporan');
+Route::get('/cetaklaporanpengaduan/{id}', [UserController::class, 'pdf'])->name('pages.user.pengaduan.cetak');
+Route::get('/tambah-user', [UserController::class, 'create'])->name('pages.user.tambahuser')->middleware('auth');
+Route::get('/users', [UserController::class, 'index'])->name('pages.user.index')->middleware('auth');
+Route::get('/pengaduan-detail/{id}', [PengaduanController::class, 'show'])->name('pengaduan.detail')->middleware('auth');
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name('welcome');

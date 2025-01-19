@@ -139,7 +139,64 @@
     transform: translateY(0);
 }
 
+.custom-toast {
+    background-color: #28a745; /* Warna hijau untuk success */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 1;
+    animation: fadeInOut 3s ease-in-out forwards; /* Durasi animasi diubah menjadi 3 detik */
+}
+
+.custom-toast i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.custom-toast .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+.custom-toast.delete-toast {
+    background-color: #f44336 !important; /* Force red background */
+    color: #fff !important;              /* Force white text */
+    border: 1px solid #d32f2f !important; /* Add red border */
+}
 
 
-
+/* Animasi fade in dan fade out */
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
 

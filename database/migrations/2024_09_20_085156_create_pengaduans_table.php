@@ -18,14 +18,15 @@ return new class extends Migration
             $table->unsignedBigInteger('masyarakat_id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('kode_pengaduan')->unique(); 
-            $table->text('isi_pengaduan');
-            $table->enum('status_pengaduan', ['pending', 'proses', 'selesai']);
+            $table->string('isi_pengaduan');
+            $table->enum('status_pengaduan', ['Belum diproses', 'Sedang diproses', 'Selesai'])->default('Belum diproses');;
             $table->string('foto')->nullable();
             $table->text('tanggapan_user')->nullable();
             $table->timestamp('tanggal_tanggapan')->nullable();
             $table->timestamps();
 
             // Foreign key
+            
             $table->foreign('masyarakat_id')->references('id')->on('masyarakats')->onDelete('cascade'); 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); 
         });

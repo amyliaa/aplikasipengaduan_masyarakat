@@ -21,20 +21,42 @@
     .export-pdf-btn:hover {
         background-color: #e60000;   
     }
+
+    .filter-container {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 20px;
+    }
+
+    .filter-container .form-control {
+        min-width: 450px;
+    }
 </style>
 
-<!-- Basic Tables start -->
 <section class="section">
     <div class="card">
         <div class="card-header">
             <h5 class="card-title">
                 Laporan
             </h5>
-            <a class="export-pdf-btn float-right" href="#">
-        <i class="fas fa-file-pdf"></i> Export PDF
-    </a>
+            <a class="export-pdf-btn float-right" href="{{ url('cetaklaporan') }}">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </a>
         </div>
         <div class="card-body">
+            <!-- Filter Tanggal -->
+            <div class="filter-container">
+                <div>
+                    <label for="startDate" class="form-label">Dari Tanggal:</label>
+                    <input type="date" id="startDate" class="form-control">
+                </div>
+                <div>
+                    <label for="endDate" class="form-label">Sampai Tanggal:</label>
+                    <input type="date" id="endDate" class="form-control">
+                </div>
+            </div>
+
+            <!-- Tabel Data -->
             <div class="table-responsive">
                 <table class="table" id="table1">
                     <thead>
@@ -47,22 +69,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Celci Monica</td>
-                            <td>Ada sampah didepan kantor ...</td>
-                            <td>12-10-2024</td>
-                            <td>
-                                <span class="badge bg-danger">Belum diproses</span>
-                            </td>
-                        </tr>
+                        @foreach($pengaduan as $dt)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $dt->masyarakat->nama }}</td>
+                                <td>{{ $dt->isi_pengaduan }}</td>
+                                <td>{{ \Carbon\Carbon::parse($dt->created_at)->format('Y-m-d') }}</td>
+                                @if($dt->status_pengaduan == 'Belum diproses')
+                                    <td><span class="badge bg-danger">{{ $dt->status_pengaduan }}</span></td>
+                                @elseif($dt->status_pengaduan == 'Sedang diproses')
+                                    <td><span class="badge bg-warning">{{ $dt->status_pengaduan }}</span></td>
+                                @else
+                                    <td><span class="badge bg-success">{{ $dt->status_pengaduan }}</span></td>
+                                @endif
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </section>
-<!-- Basic Tables end -->
 @endsection
 
 @section('tambahanJS')
@@ -73,7 +100,30 @@
 <!-- DataTables Initialization -->
 <script>
     $(document).ready(function() {
-        $('#table1').DataTable();  // Initialize DataTables
+        const table = $('#table1').DataTable();
+
+        // Custom search function for date range
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                const rowDate = data[3]; // Tanggal ada di kolom ke-4 (indeks 3)
+
+                if (startDate && endDate) {
+                    const formattedRowDate = new Date(rowDate);
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+
+                    return formattedRowDate >= start && formattedRowDate <= end;
+                }
+                return true; // Tampilkan semua data jika filter tidak diisi
+            }
+        );
+
+        // Apply filter on date change
+        $('#startDate, #endDate').on('change', function() {
+            table.draw();
+        });
     });
 </script>
 @endsection

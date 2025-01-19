@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
-
+use Illuminate\Http\RedirectResponse;
 use App\Models\Masyarakat;
 use Illuminate\Http\Request;
-
 class MasyarakatController extends Controller
 {
-    // Menampilkan daftar masyarakat
+
     public function index()
     {
         return view('pages.user.masyarakat', [
@@ -16,12 +14,29 @@ class MasyarakatController extends Controller
         ]);
     }
 
-    // Menghapus data masyarakat dari database
-    public function destroy($id)
+    public function store(Request $request)
     {
-        $masyarakat = Masyarakat::findOrFail($id);
-        $masyarakat->delete();
 
-        return redirect()->route('masyarakat.index')->with('success', 'Data masyarakat berhasil dihapus.');
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'no_telepon' => 'required|string|max:15',
+            'alamat' => 'required|string|max:255',
+        ]);
+
+        $masyarakat = Masyarakat::create([
+            'nama' => $request->nama,
+            'no_telepon' => $request->no_telepon,
+            'alamat' => $request->alamat,
+        ]);
+
+        return $masyarakat;
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+
+        Masyarakat::where('id', $id)->delete();
+        return redirect()->back()->with('delete', 'Data Masyarakat Berhasil Dihapus');
     }
 }
+

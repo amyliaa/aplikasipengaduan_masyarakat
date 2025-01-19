@@ -22,14 +22,28 @@
                             <th>Nama</th>
                             <th>No Telepon</th>
                             <th>Alamat</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($data as $dt)
                         <tr>
-                            <td>Graiden</td>
-                            <td>076 4820 8838</td>
-                            <td>Newyork</td>
+                            <td>{{ $dt->nama }}</td>
+                            <td>{{ $dt->no_telepon }}</td>
+                            <td>{{ $dt->alamat }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <form action="{{ route('masyarakat.destroy',$dt->id)}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class=" fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -51,3 +65,10 @@
     });
 </script>
 @endsection
+@if (session('delete'))
+    <div class="custom-toast delete-toast" style="background-color: #f44336 !important; color: #fff !important;">
+        <i class="fas fa-trash-alt"></i>
+        <span>{{ session('delete') }}</span>
+        <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    </div>
+@endif

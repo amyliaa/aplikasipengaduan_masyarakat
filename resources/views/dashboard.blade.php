@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="page-heading">
-                <h3>Profile Statistics</h3>
+                <h3>Dashboard</h3>
             </div>
             <div class="page-content">
                 <section class="row">
@@ -20,7 +20,7 @@
                                             </div>
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h6 class="text-muted font-semibold">Jumlah Pengaduan</h6>
-                                                <h6 class="font-extrabold mb-0">-</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $pengaduanCount }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -38,7 +38,7 @@
                                             </div>
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h6 class="text-muted font-semibold">Jumlah Petugas</h6>
-                                                <h6 class="font-extrabold mb-0">-</h6>
+                                                <h6 class="font-extrabold mb-0"> {{ $userCount }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -56,7 +56,7 @@
                                             </div>
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h6 class="text-muted font-semibold">Belum Diproses</h6>
-                                                <h6 class="font-extrabold mb-0">-</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $pendingCount }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                             </div>
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h6 class="text-muted font-semibold">Sedang Diproses</h6>
-                                                <h6 class="font-extrabold mb-0">-</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $processCount}}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -92,7 +92,7 @@
                                             </div>
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                                 <h6 class="text-muted font-semibold">Selesai</h6>
-                                                <h6 class="font-extrabold mb-0">-</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $successCount}}</h6>
                                             </div>
                                         </div>
                                     </div>
